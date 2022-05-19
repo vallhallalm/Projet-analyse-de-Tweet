@@ -1,4 +1,4 @@
-//calcul de la popularité (follows)
+//calcul de la popularité (follows) et de la popularité (groups)
 db.small_tweets_grouped_interesting_data.aggregate([
     
     {$addFields: {
