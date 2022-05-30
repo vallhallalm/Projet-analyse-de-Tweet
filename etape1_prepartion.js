@@ -1,6 +1,6 @@
 db.small_tweets_collection.aggregate([
     
-    
+
     { $group: 
             { _id: '$user.id',
                 verified:{$first:'$user.verified'},

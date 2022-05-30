@@ -1,14 +1,19 @@
 from sklearn import svm
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
-
+import pymongo
 import matplotlib.pyplot as plt     #for plotting data and cerating different charts
 import numpy as np                  #for math and array
 import pandas as pd                 #data for the data
 import seaborn as sns               #for plotting
 
 #TODO GET DATA FROM MONOGODB
-datas=...
+db_uri = "mongodb://admin_if29:passwordIF29%23@13.38.0.254:27017/?authMechanism=DEFAULT"
+client = pymongo.MongoClient(db_uri)
+print(client.list_database_names())
+base_db=client.small_tweets_database
+collec_co=base_db.small_tweets_grouped_by_user
+datas=collec_co.find()
 print('dataset shape: ',datas.shape)
 print('Summary information on the dataset')
 datas.info()

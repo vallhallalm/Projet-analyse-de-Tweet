@@ -1,6 +1,6 @@
-base_db.small_tweets_aggUser_generated_caracteristics.aggregate([
+db.small_tweets_aggUser_generated_caracteristics.aggregate([
   {
-    $addFields: {
+    $group: {
       follow_popularity: {
         $multiply: [
           {
@@ -115,7 +115,7 @@ base_db.small_tweets_aggUser_generated_caracteristics.aggregate([
             },
           },
       },
-  },
-]);
+  },{$out :"small_tweets_final"}], {allowDiskUse:true}
+);
 
 //ATTENTION L.111 le facteur x1000 corrige une erreur inconnue (facteur 10^3 entre le test et le code)
