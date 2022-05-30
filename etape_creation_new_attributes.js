@@ -1,6 +1,6 @@
 db.small_tweets_aggUser_generated_caracteristics.aggregate([
   {
-    $group: {
+    $addFields: {
       follow_popularity: {
         $multiply: [
           {
@@ -63,7 +63,7 @@ db.small_tweets_aggUser_generated_caracteristics.aggregate([
           }
         ],
       },
-      verified_badge: "verified",
+      verified_badge: "$verified",
       url_freq: {
         $divide: [
           {
