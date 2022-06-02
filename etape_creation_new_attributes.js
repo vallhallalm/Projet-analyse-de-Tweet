@@ -115,8 +115,63 @@ db.small_tweets_aggUser_generated_caracteristics.aggregate([
               lang: "js",
             },
           },
+          similarity_tweets:{
+            $function: {
+                  body: function(tweets) {
+                    const levenshteinDistance = (s, t) => {
+                      if (!s.length) return t.length;
+                      if (!t.length) return s.length;
+                      const arr = [];
+                      for (let i = 0; i <= t.length; i++) {
+                        arr[i] = [i];
+                        for (let j = 1; j <= s.length; j++) {
+                          arr[i][j] =
+                            i === 0
+                              ? j
+                              : Math.min(
+                                  arr[i - 1][j] + 1,
+                                  arr[i][j - 1] + 1,
+                                  arr[i - 1][j - 1] + (s[j - 1] === t[i - 1] ? 0 : 1)
+                                );
+                        }
+                      }
+                      return arr[t.length][s.length];
+                    };
+                    let match_score = 0;
+                    let counter = 0;
+                    if(tweets.length < 2){
+                      total_match_score = 0;
+                    }else{
+                    for(let i = 0; i<tweets.length;i++){
+                      for(let j = i+1; j<tweets.length; j++){
+                        match_score = match_score + levenshteinDistance(tweets[i].text,tweets[j].text)
+                        counter++
+                      }
+                    }
+                    total_match_score = match_score/counter;
+                  }
+                  return total_match_score;
+                },
+                  args: ["$tweets"],
+                  lang: "js",
+                },
+              },
+              tweet_length:{
+                $function: {
+                      body: function(tweets) {
+                        let tweets_length = 0;
+                        tweets.forEach((tweet)=>{
+                          tweets_length = tweets_length + tweet.text.length;
+                        })
+                        return tweets_length/tweets.size
+                      },
+                      args: ["$tweets"],
+                      lang: "js",
+                    },
+                  },
+
       },
-  },{$out :"small_tweets_final"}], {allowDiskUse:true}
+  },{$out :"small_tweets_final_with_text"}], {allowDiskUse:true}
 );
 
-//ATTENTION L.111 le facteur x1000 corrige une erreur inconnue (facteur 10^3 entre le test et le code)
+//ATTENTION L.111 le facteur x1000 corrige une erreur inconnue (facteur 10^3 entre le test et le code) 
