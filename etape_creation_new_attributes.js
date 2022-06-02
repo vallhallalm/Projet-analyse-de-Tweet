@@ -1,3 +1,4 @@
+var stringSimilarity = require("string-similarity");
 db.small_tweets_aggUser_generated_caracteristics.aggregate([
   {
     $addFields: {
