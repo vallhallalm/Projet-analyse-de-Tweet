@@ -13,7 +13,8 @@ client = pymongo.MongoClient(db_uri)
 print(client.list_database_names())
 base_db=client.small_tweets_database
 collec_co=base_db.small_tweets_grouped_by_user
-datas=collec_co.find()
+#convert entire collection to Pandas dataframe
+datas=pd.DataFrame(list(collec_co.find()))
 print('dataset shape: ',datas.shape)
 print('Summary information on the dataset')
 datas.info()
@@ -26,6 +27,7 @@ datas.isnull().sum()
 
 print("remove line with NA")
 datas= datas.dropna()
+datas = datas
 
 datas= datas.sample(frac=1)     #Shuffle the datas to not be sorted
 
@@ -47,19 +49,19 @@ print(f" Validation dataset : {valid_dataset.shape}")
 
 # Plot the relationship between each two variables to spot anything incorrect.
 train_stats = train_dataset.describe()
-train_stats.pop("target")
+train_stats.pop("_id")
 sns.pairplot(train_stats[train_stats.columns], diag_kind="kde") # or diag_kind
 
 # Statistics on the train dataset to make sure it is in a good shape.
 # (Can display the same stat for test and validate)
 train_stats = train_dataset.describe()
-train_stats.pop("target")
+train_stats.pop("_id")
 train_stats = train_stats.transpose()
 train_stats
 
-train_labels = train_dataset.pop('target')
-test_labels = test_dataset.pop('target')
-valid_labels = valid_dataset.pop('target')
+train_labels = train_dataset.pop('_id')
+test_labels = test_dataset.pop('_id')
+valid_labels = valid_dataset.pop('_id')
 
 #DATA NORMALISATION / SCALING
 #Subtract the mean of the training data and divide
