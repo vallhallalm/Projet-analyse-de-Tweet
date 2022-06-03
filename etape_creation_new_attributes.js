@@ -1,6 +1,7 @@
+var stringSimilarity = require("string-similarity");
 db.small_tweets_aggUser_generated_caracteristics.aggregate([
   {
-    $group: {
+    $addFields: {
       follow_popularity: {
         $multiply: [
           {
@@ -63,7 +64,7 @@ db.small_tweets_aggUser_generated_caracteristics.aggregate([
           }
         ],
       },
-      verified_badge: "verified",
+      verified_badge: "$verified",
       url_freq: {
         $divide: [
           {
@@ -114,8 +115,25 @@ db.small_tweets_aggUser_generated_caracteristics.aggregate([
               lang: "js",
             },
           },
+              tweet_length:{
+                $function: {
+                      body: function(tweets) {
+                        let tweets_length = 0;
+                        if(tweets.length == 0){
+                          return 0
+                        }
+                        tweets.forEach((tweet)=>{
+                          tweets_length = tweets_length + tweet.text.length;
+                        })
+                        return tweets_length/tweets.length
+                      },
+                      args: ["$tweets"],
+                      lang: "js",
+                    },
+                  },
+
       },
-  },{$out :"small_tweets_final"}], {allowDiskUse:true}
+  },{$out :"small_tweets_final_with_text"}], {allowDiskUse:true}
 );
 
-//ATTENTION L.111 le facteur x1000 corrige une erreur inconnue (facteur 10^3 entre le test et le code)
+//ATTENTION L.111 le facteur x1000 corrige une erreur inconnue (facteur 10^3 entre le test et le code) 
