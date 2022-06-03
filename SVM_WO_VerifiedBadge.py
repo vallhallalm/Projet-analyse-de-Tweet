@@ -16,6 +16,7 @@ collec_co=base_db.small_tweets_final_with_labels_wo_verifiedBadge
 #convert entire collection to Pandas dataframe
 datas=pd.DataFrame(list(collec_co.find()))
 datas= datas.drop(columns='_id')
+
 print('dataset shape: ',datas.shape)
 print('Summary information on the dataset')
 datas.info()
@@ -118,3 +119,4 @@ sns.heatmap(cm, annot=True, ax = ax); #annot=True to annotate cells
 ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels');
 ax.set_title('Confusion Matrix');
 # ax.xaxis.set_ticklabels(['Positive', 'Negative']); ax.yaxis.set_ticklabels(['Positive', 'Negative']);
+plt.show()
