@@ -7,14 +7,16 @@ import numpy as np                  #for math and array
 import pandas as pd                 #data for the data
 import seaborn as sns               #for plotting
 
-#TODO GET DATA FROM MONOGODB
+#GET DATA FROM MONOGODB
 db_uri = "mongodb://admin_if29:passwordIF29%23@13.38.0.254:27017/?authMechanism=DEFAULT"
 client = pymongo.MongoClient(db_uri)
 print(client.list_database_names())
 base_db=client.small_tweets_database
-collec_co=base_db.small_tweets_grouped_by_user
+collec_co=base_db.small_tweets_final_with_labels_wo_verifiedBadge
 #convert entire collection to Pandas dataframe
 datas=pd.DataFrame(list(collec_co.find()))
+datas= datas.drop(columns='_id')
+
 print('dataset shape: ',datas.shape)
 print('Summary information on the dataset')
 datas.info()
@@ -49,19 +51,19 @@ print(f" Validation dataset : {valid_dataset.shape}")
 
 # Plot the relationship between each two variables to spot anything incorrect.
 train_stats = train_dataset.describe()
-train_stats.pop("_id")
+train_stats.pop("label")
 sns.pairplot(train_stats[train_stats.columns], diag_kind="kde") # or diag_kind
 
 # Statistics on the train dataset to make sure it is in a good shape.
 # (Can display the same stat for test and validate)
 train_stats = train_dataset.describe()
-train_stats.pop("_id")
+train_stats.pop("label")
 train_stats = train_stats.transpose()
 train_stats
 
-train_labels = train_dataset.pop('_id')
-test_labels = test_dataset.pop('_id')
-valid_labels = valid_dataset.pop('_id')
+train_labels = train_dataset.pop('label')
+test_labels = test_dataset.pop('label')
+valid_labels = valid_dataset.pop('label')
 
 #DATA NORMALISATION / SCALING
 #Subtract the mean of the training data and divide
@@ -117,3 +119,4 @@ sns.heatmap(cm, annot=True, ax = ax); #annot=True to annotate cells
 ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels');
 ax.set_title('Confusion Matrix');
 # ax.xaxis.set_ticklabels(['Positive', 'Negative']); ax.yaxis.set_ticklabels(['Positive', 'Negative']);
+plt.show()
