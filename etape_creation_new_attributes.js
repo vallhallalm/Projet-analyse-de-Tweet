@@ -3,26 +3,16 @@ db.small_tweets_aggUser_generated_caracteristics.aggregate([
   {
     $addFields: {
       follow_popularity: {
-        $multiply: [
-          {
             $divide: [
               { $subtract: ["$followers", 0] },
               { $subtract: [30755372, 0] },
             ],
-          },
-          100,
-        ],
       },
       group_popularity: {
-        $multiply: [
-          {
             $divide: [
               { $subtract: ["$groups_count", 0] },
               { $subtract: [114667, 0] },
             ],
-          },
-          100,
-        ],
       },
       hashtags_freq: {
         $divide: [
@@ -88,7 +78,7 @@ db.small_tweets_aggUser_generated_caracteristics.aggregate([
       date_of_creation_account:{
         $function: {
           body: function(date) {
-            return (Date.parse('Wed Sep 30 23:41:53 +0000 2009') - Date.parse('Fri Apr 01 00:27:36 +0000 2016'))/(Date.parse(date)-Date.parse('Fri Apr 01 00:27:36 +0000 2016'));
+            return (((Date.parse(date)-Date.parse('Tue Aug 15 20:56:32 +0000 2006'))/(Date.parse('Thu Jun 14 14:15:39 +0000 2018')-Date.parse('Tue Aug 15 20:56:32 +0000 2006'))))
           },
           args: ["$user_created_at"],
           lang: "js",
